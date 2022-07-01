@@ -1,3 +1,0 @@
-curl -X POST -H 'Content-Type: application/json' http://Your_Server_Ingress_Address/setNextServer -d '{"server":"Your_Server_Ingress_Address"}'
-
-e.g. curl -X POST -H 'Content-Type: application/json' http://mizzou-nautilis-user1.nrp-nautilus.io/setNextServer -d '{"server":"mizzou-nautilis-user1.nrp-nautilus.io"}'

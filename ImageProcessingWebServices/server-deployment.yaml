@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imgproc-server
+  labels: 
+    app: imageProcessing
+    tier: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: imageProcessing
+      tier: server
+  template:
+    metadata:
+      labels:
+        app: imageProcessing
+        tier: server
+    spec:
+      containers:
+      - name: imgproc-server
+        image: wangso/imgproc-server:V2
+        imagePullPolicy: Always
+        env:
+          - name: server
+            value: Your-Unique-Host-Name.nrp-nautilus.io
+        resources:
+          limits:
+            memory: 2000Mi
+            cpu: 2
+          requests:
+            memory: 1000Mi
+            cpu: 1
+        ports:
+          - containerPort: 5000
+        volumeMounts:
+        - mountPath: /ImageProcessingWebServices/output/server
+          name: myvolume
+      volumes:
+      - name: myvolume
+        persistentVolumeClaim:
+          claimName: Your-Unique-Volume-Name
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-service
+spec:
+  type: ClusterIP
+  selector:
+    app: imageProcessing
+    tier: server
+  ports:
+  - name: http
+    port: 5000
+    targetPort: 5000
+    protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: haproxy
+  name: server-ingress
+spec:
+  rules:
+  - host: Your-Unique-Host-Name.nrp-nautilus.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend: 
+          service: 
+            name: server-service
+            port: 
+              number: 5000

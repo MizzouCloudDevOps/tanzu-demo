@@ -20,21 +20,7 @@ spec:
               imagePullPolicy: Always
               env:
                 - name: server
-                  value: Your-Unique-Host-Name.nrp-nautilus.io
-              resources:
-                limits:
-                  memory: 2000Mi
-                  cpu: 2
-                requests:
-                  memory: 1000Mi
-                  cpu: 1
-              volumeMounts:
-              - mountPath: /ImageProcessingWebServices/output/client
-                name: myvolume
-            volumes:
-            - name: myvolume
-              persistentVolumeClaim:
-                claimName: Your-Unique-Volume-Name
+                  value: "Your-LoadBancer-Name"
             restartPolicy: Always
 
       

@@ -23,23 +23,9 @@ spec:
         imagePullPolicy: Always
         env:
           - name: server
-            value: Your-Unique-Host-Name.nrp-nautilus.io
-        resources:
-          limits:
-            memory: 2000Mi
-            cpu: 2
-          requests:
-            memory: 1000Mi
-            cpu: 1
+            value: "Your-LoadBancer-Name"
         ports:
           - containerPort: 5000
-        volumeMounts:
-        - mountPath: /ImageProcessingWebServices/output/server
-          name: myvolume
-      volumes:
-      - name: myvolume
-        persistentVolumeClaim:
-          claimName: Your-Unique-Volume-Name
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -47,7 +33,7 @@ kind: Service
 metadata:
   name: server-service
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: imageProcessing
     tier: server
@@ -56,22 +42,3 @@ spec:
     port: 5000
     targetPort: 5000
     protocol: TCP
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: haproxy
-  name: server-ingress
-spec:
-  rules:
-  - host: Your-Unique-Host-Name.nrp-nautilus.io
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend: 
-          service: 
-            name: server-service
-            port: 
-              number: 5000
